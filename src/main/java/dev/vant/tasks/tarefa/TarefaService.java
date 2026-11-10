@@ -58,6 +58,16 @@ public class TarefaService {
     }
 
     @Transactional
+    public TarefaResponse iniciar(Long id) {
+        Tarefa tarefa = porId(id);
+        if (tarefa.getStatus() == StatusTarefa.CONCLUIDA) {
+            throw new RegraDeNegocioException("Uma tarefa concluída não pode ser reiniciada.");
+        }
+        tarefa.setStatus(StatusTarefa.EM_ANDAMENTO);
+        return TarefaResponse.de(tarefa);
+    }
+
+    @Transactional
     public TarefaResponse concluir(Long id) {
         Tarefa tarefa = porId(id);
         if (tarefa.getStatus() != StatusTarefa.CONCLUIDA) {

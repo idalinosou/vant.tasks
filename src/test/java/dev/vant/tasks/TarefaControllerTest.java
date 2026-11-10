@@ -121,6 +121,26 @@ class TarefaControllerTest {
     }
 
     @Test
+    void iniciaTarefaPendente() throws Exception {
+        long id = criarTarefa("Começar o projeto", "ALTA");
+
+        mvc.perform(patch("/api/tarefas/{id}/iniciar", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("EM_ANDAMENTO"))
+                .andExpect(jsonPath("$.concluidaEm").value(nullValue()));
+    }
+
+    @Test
+    void impedeIniciarTarefaConcluida() throws Exception {
+        long id = criarTarefa("Já finalizada", "MEDIA");
+        mvc.perform(patch("/api/tarefas/{id}/concluir", id)).andExpect(status().isOk());
+
+        mvc.perform(patch("/api/tarefas/{id}/iniciar", id))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409));
+    }
+
+    @Test
     void listaTarefasFiltrandoPorStatus() throws Exception {
         long pendente = criarTarefa("Pendente um", "BAIXA");
         long concluida = criarTarefa("Concluída um", "ALTA");

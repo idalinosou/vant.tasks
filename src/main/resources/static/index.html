@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>vant.tasks — organização de tarefas</title>
+  <meta name="description" content="Aplicação de tarefas da suíte vant: criar, editar, concluir e filtrar tarefas com prioridades, paginação e API em Spring Boot." />
+  <link rel="icon" href="marca/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="icon" href="marca/favicon-64.png" sizes="64x64" type="image/png" />
+  <link rel="apple-touch-icon" href="marca/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=3" />
+</head>
+<body>
+  <a class="pular" href="#conteudo">Ir para o conteúdo</a>
+
+  <header class="topo">
+    <a class="marca" href="https://idalinosou.github.io/portfolio/" title="Voltar ao portfólio">
+      <img class="marca-logo" src="marca/vant-mark.png" alt="" width="807" height="592" />
+      <span>vant.tasks</span>
+    </a>
+    <span id="selo-modo" class="selo">Carregando…</span>
+  </header>
+
+  <main id="conteudo" class="conteudo">
+    <section class="abertura">
+      <p class="rotulo">API REST · Spring Boot</p>
+      <h1>Organize o que importa.</h1>
+      <p class="subtitulo" id="subtitulo">
+        Crie, priorize e acompanhe suas tarefas. Tudo salvo no banco de dados pela API,
+        com filtros, paginação e validação.
+      </p>
+    </section>
+
+    <section class="numeros" aria-label="Resumo das tarefas">
+      <dl class="numero">
+        <dt id="num-abertas">0</dt>
+        <dd>Abertas</dd>
+      </dl>
+      <dl class="numero">
+        <dt id="num-andamento">0</dt>
+        <dd>Em andamento</dd>
+      </dl>
+      <dl class="numero">
+        <dt id="num-concluidas">0</dt>
+        <dd>Concluídas</dd>
+      </dl>
+    </section>
+
+    <div class="layout">
+      <aside class="painel">
+        <form id="form-tarefa" class="form" novalidate>
+          <h2 id="form-titulo">Nova tarefa</h2>
+
+          <label class="campo">
+            <span>Título</span>
+            <input id="campo-titulo" name="titulo" type="text" maxlength="120" required
+                   placeholder="Ex.: Estudar JPA" autocomplete="off" />
+          </label>
+
+          <label class="campo">
+            <span>Descrição <small>(opcional)</small></span>
+            <textarea id="campo-descricao" name="descricao" rows="3" maxlength="500"
+                      placeholder="Detalhes da tarefa"></textarea>
+          </label>
+
+          <div class="dupla">
+            <label class="campo">
+              <span>Prioridade</span>
+              <select id="campo-prioridade" name="prioridade">
+                <option value="BAIXA">Baixa</option>
+                <option value="MEDIA" selected>Média</option>
+                <option value="ALTA">Alta</option>
+              </select>
+            </label>
+
+            <label class="campo">
+              <span>Prazo</span>
+              <input id="campo-prazo" name="prazo" type="date" />
+            </label>
+          </div>
+
+          <p id="erro-form" class="erro" role="alert" hidden></p>
+
+          <div class="acoes-form">
+            <button type="submit" class="botao" id="botao-salvar">Adicionar tarefa</button>
+            <button type="button" class="botao-fantasma" id="botao-cancelar" hidden>Cancelar</button>
+          </div>
+        </form>
+
+        <div class="filtros-painel">
+          <h2>Filtros</h2>
+
+          <label class="campo">
+            <span>Status</span>
+            <select id="filtro-status">
+              <option value="">Todos</option>
+              <option value="PENDENTE">Pendentes</option>
+              <option value="EM_ANDAMENTO">Em andamento</option>
+              <option value="CONCLUIDA">Concluídas</option>
+            </select>
+          </label>
+
+          <label class="campo">
+            <span>Prioridade</span>
+            <select id="filtro-prioridade">
+              <option value="">Todas</option>
+              <option value="ALTA">Alta</option>
+              <option value="MEDIA">Média</option>
+              <option value="BAIXA">Baixa</option>
+            </select>
+          </label>
+
+          <button type="button" class="botao-fantasma largo" id="botao-limpar">Limpar filtros</button>
+        </div>
+      </aside>
+
+      <section class="lista-area" aria-labelledby="lista-titulo">
+        <div class="lista-topo">
+          <h2 id="lista-titulo">Tarefas</h2>
+          <span id="contador" class="contador"></span>
+        </div>
+
+        <ul id="lista" class="lista"></ul>
+
+        <p id="vazio" class="vazio" hidden>
+          <span class="vazio-icone">v.</span>
+          Nenhuma tarefa encontrada com esses filtros.
+        </p>
+
+        <nav id="paginacao" class="paginacao" aria-label="Paginação">
+          <button type="button" class="botao-fantasma" id="botao-anterior">← Anterior</button>
+          <span id="pagina-atual" class="pagina-atual">Página 1</span>
+          <button type="button" class="botao-fantasma" id="botao-proxima">Próxima →</button>
+        </nav>
+
+        <p id="aviso" class="aviso" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="rodape">
+    <p>vant.tasks · Java 21 + Spring Boot + H2, com testes de integração.</p>
+    <p class="rodape-links">
+      <a href="https://idalinosou.github.io/portfolio/" target="_blank" rel="noopener">Portfólio</a>
+      <a href="https://github.com/idalinosou/vant.tasks" target="_blank" rel="noopener">Código</a>
+    </p>
+  </footer>
+
+  <script src="app.js?v=3"></script>
+</body>
+</html>

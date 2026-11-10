@@ -24,7 +24,10 @@ public class DadosIniciais implements CommandLineRunner {
         }
 
         repositorio.save(criar("Estudar Spring Boot", "Controllers, services e repositories.", Prioridade.ALTA, LocalDate.now().plusDays(7)));
-        repositorio.save(criar("Revisar JPA", "Relacionamentos e consultas com Specification.", Prioridade.MEDIA, LocalDate.now().plusDays(10)));
+
+        Tarefa andamento = criar("Revisar JPA", "Relacionamentos e consultas com Specification.", Prioridade.MEDIA, LocalDate.now().plusDays(10));
+        andamento.setStatus(StatusTarefa.EM_ANDAMENTO);
+        repositorio.save(andamento);
 
         Tarefa concluida = criar("Publicar o portfólio", "Site no GitHub Pages com identidade vant.", Prioridade.MEDIA, null);
         concluida.setStatus(StatusTarefa.CONCLUIDA);

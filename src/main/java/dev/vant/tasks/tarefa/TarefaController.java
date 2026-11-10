@@ -60,6 +60,11 @@ public class TarefaController {
         return servico.atualizar(id, pedido);
     }
 
+    @PatchMapping("/{id}/iniciar")
+    public TarefaResponse iniciar(@PathVariable Long id) {
+        return servico.iniciar(id);
+    }
+
     @PatchMapping("/{id}/concluir")
     public TarefaResponse concluir(@PathVariable Long id) {
         return servico.concluir(id);
